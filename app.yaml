@@ -1,0 +1,7 @@
+runtime: python311
+entrypoint: gunicorn -b :$PORT personalWebpage.wsgi:application
+
+env_variables:
+  DJANGO_SETTINGS_MODULE: "personalWebpage.settings"
+
+instance_class: F2
