@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'literature:literature-index' %}">Go back</a>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-7">
+
+            <!-- Item Details Table -->
+            <table class="table table-light">
+                <tbody>
+                    <tr>
+                        <th>Author</th>
+                        <td>{{ item.author }}</td>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <td>{{ item.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Tags</th>
+                        <td>{{ item.description }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date Added</th>
+                        <td>{{ item.date_added }}</td>
+                    </tr>
+                    <tr>
+                        <th>Action</th>
+                        <td>
+                            <a href="{{ item.content.url }}">Show</a> or 
+                            <a href="{{ item.content.url }}" download>Download</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

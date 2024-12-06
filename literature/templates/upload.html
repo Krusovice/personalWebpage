@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Upload Form</h2>
+<form method="POST" enctype="multipart/form-data" name="ItemUploadForm">
+    {% csrf_token %}
+    {{ form_upload.as_p }}
+    <input type="submit" value="Save" class="btn btn-primary" />
+</form>
+
+{% endblock content %}
