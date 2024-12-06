@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from personalWebpage import views
-from literature import views
+from literature import views as literature_views
 
 
 urlpatterns = [
