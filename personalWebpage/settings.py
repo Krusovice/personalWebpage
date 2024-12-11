@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*h9rmqxt*9&apea)&^dcz15*u_t=pbf$qv*xvzkd3&q^-zb^on'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['personalwebpage-443911.ew.r.appspot.com','127.0.0.1', 'www.jkirstein.dk', 'jkirstein.dk']
 
@@ -130,7 +130,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login_user/'
 LOGIN_REDIRECT_URL = '/logged_in/'
 LOGOUT_REDIRECT_URL = '/login_user/'
-
+'''
 # HTTPS-relaterede indstillinger
 SECURE_SSL_REDIRECT = True  # Omdiriger HTTP til HTTPS
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # For proxy setups (som Google App Engine)
@@ -143,3 +143,4 @@ SESSION_COOKIE_SECURE = True  # Sørg for at session-cookies er sendt over HTTPS
 SECURE_HSTS_SECONDS = 31536000  # Aktiver HTTP Strict Transport Security (HSTS)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Inkluder subdomæner i HSTS
 SECURE_HSTS_PRELOAD = True  # Aktiver preload til HSTS
+'''
