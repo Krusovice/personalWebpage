@@ -130,3 +130,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login_user/'
 LOGIN_REDIRECT_URL = '/logged_in/'
 LOGOUT_REDIRECT_URL = '/login_user/'
+
+# HTTPS-relaterede indstillinger
+SECURE_SSL_REDIRECT = True  # Omdiriger HTTP til HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # For proxy setups (som Google App Engine)
+
+# CSRF og session sikkerhed
+CSRF_COOKIE_SECURE = True  # Sørg for at CSRF-cookie er sendt over HTTPS
+SESSION_COOKIE_SECURE = True  # Sørg for at session-cookies er sendt over HTTPS
+
+# Sikkerhedsindstillinger for cookies
+SECURE_HSTS_SECONDS = 31536000  # Aktiver HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Inkluder subdomæner i HSTS
+SECURE_HSTS_PRELOAD = True  # Aktiver preload til HSTS
