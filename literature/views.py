@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import Paginator
 from django.urls import reverse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -15,13 +14,8 @@ def literature_index(request):
         Q(description__icontains=query)
     ) if query else Item.objects.all()
 
-    # Paginate the results (10 items per page)
-    paginator = Paginator(items, 10)
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-
     context = {
-        'objects': page_obj,
+        'objects': items,
         'query': query,
         'user': request.user,
     }
