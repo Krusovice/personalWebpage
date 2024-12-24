@@ -12,6 +12,7 @@
 # below:
 .git
 .gitignore
+cloud_sql_proxy.exe
 
 # Python pycache:
 __pycache__/
