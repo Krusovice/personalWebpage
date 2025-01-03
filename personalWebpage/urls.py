@@ -27,6 +27,8 @@ urlpatterns = [
     path('login_user/', auth_views.LoginView.as_view(), name='login_user'),
     path('logout_user/', auth_views.LogoutView.as_view(), name='logout_user'),
     path('', include('frontpage.urls')),
+    path('about/', include('about.urls')),
+    path('foundationResponse/', include('foundationResponse.urls')),
     path('literature/', include('literature.urls')),
     path('logged_in/', views.logged_in, name='logged_in'),
 ]

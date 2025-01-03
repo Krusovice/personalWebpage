@@ -1,0 +1,27 @@
+.toggle-btn {
+    all: unset; /* Remove default button styling */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+.toggle-btn:hover {
+    text-decoration: none;
+}
+
+.toggle-icon {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+    color: gold;
+}
+
+/* Rotate the icon when expanded */
+.toggle-btn[aria-expanded="true"] .toggle-icon {
+    transform: rotate(45deg);
+}
+
