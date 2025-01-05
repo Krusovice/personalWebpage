@@ -1,0 +1,15 @@
+[
+    {
+        "foundationWidth": 1.0,
+        "eccentricity": 0.17,
+        "soilModel": "linear",
+        "soils": [
+            42777.0,
+            78278.0,
+            30039.0,
+            40738.0
+        ],
+        "Uy": -0.00118141866110153,
+        "rot": 0.0
+    }
+]
