@@ -31,15 +31,18 @@ df['soilsNew'] = df.apply(lambda row: fillSoilArray(row['soils'], maxLength=maxS
 
 soils_df = pd.DataFrame(df['soilsNew'].to_list(), columns=[f'soil_layer_{i}' for i in range(maxSoilLayers)])
 df = pd.concat([df, soils_df], axis=1)
-df = df.drop(columns=['soils','soilsNew','soilModel'])
+df = df.drop(columns=['soils','soilsNew'])
 #df = df[df['foundationWidth'] > 2]
 # Feature Engineering
-df = df[df['Uy'] < 0]
+#df = df[df['Uy'] < -0.001]
+#df = df[df['foundationWidth'] == 4]
+#df = df[df['eccentricity'] < 0.1]
+df = df[df['soilModel'] == 'MC'].drop(columns=['soilModel'])
 df = df.apply(lambda x: 1/x if x.name.startswith('soil_layer') else x)
 X = df.drop(columns=['Uy','rot'])
 y = df['Uy']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=3)
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
@@ -57,8 +60,9 @@ rf_pred = rf_model.predict(X_test)
 rf_errors = (rf_pred-y_test)/y_test
 
 # Exploring max errors
-errors = pd.DataFrame({'error':rf_errors})
-df = pd.concat([1/X_test,errors],axis=1)
+errors = pd.DataFrame({'error':lin_errors})
+X_test = X_test.apply(lambda x: 1/x if x.name.startswith('soil_layer') else x)
+df2 = pd.concat([X_test,errors],axis=1)
 
 
 # Plotting
@@ -77,4 +81,4 @@ ax1.legend()
 # Vis plottet
 plt.show()
 
-print(df.iloc[:,2:].sort_values('error',ascending=False))
+#print(df2.iloc[:,2:].sort_values('error',ascending=False))
