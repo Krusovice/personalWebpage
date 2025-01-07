@@ -96,6 +96,7 @@ def appendDataFile(dataFile_path, plaxis_password, foundationWidth, E_min, E_max
 
 	Uy_max, Uy_min = createModel(data,plaxis_password)
 	if Uy_max == 'Calculation failed':
+		data['Uy'] = 'Calculation failed'
 		data['rot'] = 'Calculation failed'
 	else:
 		diffY = Uy_max - Uy_min

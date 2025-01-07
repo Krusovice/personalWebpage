@@ -17,6 +17,7 @@ pd.set_option('display.max_colwidth', None)  # No limit on column width
 
 filePath = r"C:\Users\jmkir\Ramboll\JMKIR - Documents\personalWebpage\foundationResponse\ML\dataFile_test - copy.json"
 df = pd.read_json(filePath)
+df = df[df['Uy'] != 'Calculation failed']
 
 # Substituting no soil values with a hard soil placeholder value
 maxSoilLayers = max([len(i) for i in df['soils']])
@@ -28,7 +29,7 @@ def fillSoilArray(array,maxLength,placeholderValue):
     return array
 
 df['soilsNew'] = df.apply(lambda row: fillSoilArray(row['soils'], maxLength=maxSoilLayers, placeholderValue = placeholder_soilValue), axis=1)
-
+#%%
 soils_df = pd.DataFrame(df['soilsNew'].to_list(), columns=[f'soil_layer_{i}' for i in range(maxSoilLayers)])
 df = pd.concat([df, soils_df], axis=1)
 df = df.drop(columns=['soils','soilsNew'])
@@ -36,13 +37,13 @@ df = df.drop(columns=['soils','soilsNew'])
 # Feature Engineering
 #df = df[df['Uy'] < -0.001]
 #df = df[df['foundationWidth'] == 4]
-#df = df[df['eccentricity'] < 0.1]
+#df = df[df['eccentricity'] > 0.01]
 df = df[df['soilModel'] == 'MC'].drop(columns=['soilModel'])
 df = df.apply(lambda x: 1/x if x.name.startswith('soil_layer') else x)
 X = df.drop(columns=['Uy','rot'])
 y = df['Uy']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=3)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=1)
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
