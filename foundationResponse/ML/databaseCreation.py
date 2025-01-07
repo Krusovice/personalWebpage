@@ -21,7 +21,7 @@ modelDepthFactor = 2 # Model depth in relation to the foundation width
 
 plaxis_password = 'w!V+ZGheHT%V!6U^'
 dataFile_path = r'C:\Users\jmkir\Ramboll\JMKIR - Documents\personalWebpage\foundationResponse\ML\dataFile_test.json'
-calculationsToRun = 1
+calculationsToRun = 2500
 
 s_i, g_i = new_server('localhost', 10000, password=plaxis_password)
 
@@ -98,8 +98,6 @@ def appendDataFile(dataFile_path, plaxis_password, foundationWidth, E_min, E_max
 	if Uy_max == 'Calculation failed':
 		data['rot'] = 'Calculation failed'
 	else:
-		print(Uy_max)
-		print(Uy_min)
 		diffY = Uy_max - Uy_min
 		data['Uy'] = (Uy_min + Uy_max)/2
 		data['rot'] = math.asin(diffY / data['foundationWidth'])
