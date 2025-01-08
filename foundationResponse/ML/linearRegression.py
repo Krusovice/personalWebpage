@@ -8,6 +8,7 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 import seaborn as sns
+from sklearn.pipeline import make_pipeline
 
 #pd.set_option('display.max_rows', None)  # Show all rows
 pd.set_option('display.max_columns', None)  # Show all columns
@@ -24,7 +25,7 @@ df = df[df['Uy'] != 'Calculation failed']
 maxSoilLayers = max([len(i) for i in df['soils']])
 
 # Taking the inverse of the soil layers, as it is expected that a linear relationship between settlements and the inverse Emodulus, rather than the Emodulus.
-df['soils'].apply(lambda x: [1/i for i in x])
+df['soils'] = df['soils'].apply(lambda x: [1/i for i in x])
 
 # Filling all soil layers under BC's with zero.
 def fillSoilArray(array,maxLength):
@@ -35,7 +36,11 @@ def fillSoilArray(array,maxLength):
 df['soilsNew'] = df.apply(lambda row: fillSoilArray(row['soils'], maxLength=maxSoilLayers), axis=1)
 soils_df = pd.DataFrame(df['soilsNew'].to_list(), columns=[f'soil_layer_{i}' for i in range(maxSoilLayers)])
 df = pd.concat([df, soils_df], axis=1)
+
+for i in range(maxSoilLayers):
+    df[f'soil_layer_foundation_interaction_{i}'] = df[f'soil_layer_{i}'] * df['foundationWidth']
 df = df.drop(columns=['soils','soilsNew'])
+
 #%%
 #df = df[df['foundationWidth'] > 2]
 # Feature Engineering
@@ -51,13 +56,20 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
+# Linear
 lin_model = LinearRegression()
 lin_model.fit(X_train_scaled, y_train)
 lin_pred = lin_model.predict(X_test_scaled)
 lin_errors = (lin_pred-y_test)/y_test
 
+# Polynomial
+degree = 2
+poly_model = make_pipeline(PolynomialFeatures(degree), LinearRegression())
+poly_model.fit(X_train_scaled, y_train)
+poly_pred = poly_model.predict(X_test_scaled)
+poly_errors = (poly_pred-y_test)/y_test
 
-
+# Random forest
 rf_model = RandomForestRegressor(n_estimators=100)
 rf_model.fit(X_train, y_train)
 rf_pred = rf_model.predict(X_test)
@@ -71,8 +83,9 @@ df2 = pd.concat([X_test,errors],axis=1)
 # Plotting
 fig, (ax1) = plt.subplots(1, 1, figsize=(10, 5))
 
-ax1.plot(y_test*1000,rf_errors,marker='o',linestyle='',color='r',label='Random Forest Regression',alpha=0.3)
+#ax1.plot(y_test*1000,rf_errors,marker='o',linestyle='',color='r',label='Random Forest Regression',alpha=0.3)
 ax1.plot(y_test*1000,lin_errors,marker='o',linestyle='',color='b',label='Linear Regression',alpha=0.3)
+ax1.plot(y_test*1000,poly_errors,marker='o',linestyle='',color='g',label='Polynomial Regression (deg=2)',alpha=0.3)
 ax1.invert_xaxis()
 ax1.set_xlabel('Actual settlement [mm]')
 ax1.set_ylabel('Predicted settlement / Actual settlement [-]')
@@ -82,22 +95,7 @@ ax1.grid(which='minor',alpha=0.2)
 ax1.legend()
 plt.show()
 
-#%% 
-from sklearn.inspection import PartialDependenceDisplay
-
-# PDP for Random Forest-modelen
-features_to_plot = ['soil_layer_9', 'soil_layer_0']  # Indeks eller feature-navne fra X_train (f.eks. 'foundationWidth', 'soil_layer_0')
-
-fig, ax = plt.subplots(figsize=(12, 6))
-PartialDependenceDisplay.from_estimator(
-    rf_model,               # Din Random Forest-model
-    X_train,                # Utrænede data (før skalering)
-    features=features_to_plot,  # Features at analysere (vælg relevante kolonner)
-    ax=ax,
-    kind='average'          # Gennemsnitlig PDP
-)
-plt.show()
-
+#%% Feature importance on random forest
 importances = rf_model.feature_importances_
 feature_names = X.columns
 
@@ -108,9 +106,8 @@ plt.xlabel('Feature Importance')
 plt.title('Feature Importance from Random Forest')
 plt.show()
 
-#%% Correlation matrix on linear regression model
+#%% Feature importance on linear regression (linear coefficients)
 
-# Get the coefficients (feature importances)
 coefficients = pd.DataFrame(lin_model.coef_, X_train.columns, columns=['Coefficient']).reset_index()
 # Plot feature importance
 plt.figure(figsize=(12, 6))
@@ -118,3 +115,18 @@ plt.barh(coefficients['index'], coefficients['Coefficient'])
 plt.xlabel('Feature Importance')
 plt.title('Feature coefficients on linear regression model')
 plt.show()
+
+# #%% Feature importance on polynomial regression (quadratic coefficients)
+
+# coefficients = pd.DataFrame(lin_model.coef_, X_train.columns, columns=['Coefficient']).reset_index()
+# # Plot feature importance
+# plt.figure(figsize=(12, 6))
+# plt.barh(coefficients['index'], coefficients['Coefficient'])
+# plt.xlabel('Feature Importance')
+# plt.title('Feature coefficients on linear regression model')
+# plt.show()
+#%% Plotting settlements in relation to E. Hence, S is dependent on E inversed.
+# def f(E):
+#     return 100/E
+# plt.figure()
+# plt.plot(np.arange(10),[f(E) for E in np.arange(10)])
