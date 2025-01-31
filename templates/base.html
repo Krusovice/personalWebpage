@@ -11,12 +11,17 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #062b55;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"></a>
+        <div class="container">
+            <!-- Navbar Brand -->
+            <!--<a class="navbar-brand" href="#">Brand</a> -->
+            
+            <!-- Toggler Button for mobile view -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarNav">
+
+            <!-- Navbar Items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/">Forside</a>
@@ -30,6 +35,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">About</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+
+                <!-- Aligning login/logout with container -->
+                <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <form method="POST" action="{% url 'logout_user' %}">
@@ -37,15 +49,18 @@
                             <button type="submit" class="nav-link btn btn-link" style="border: none; background: none;">Log Out</button>
                         </form>
                     </li>
-                {% else %}
+                    {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login_user' %}">Log In</a>
                     </li>
-                {% endif %}
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+
+
+
 
     <div class="container">
         {% block content %}

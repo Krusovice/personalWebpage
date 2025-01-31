@@ -6,16 +6,21 @@
 
 <div class="container mt-4">
     <div class="container mt-4">
+        <div class="row justify-content-center">
         {% for news in news_items %}
-        <div class="card p-4 shadow" style="background-color: #f9f9f9;">
-            <div class="card-body">
-                <h5 class="card-title">{{ news.title }}</h5>
-                <!-- Use the linebreaks filter here -->
-                <p class="card-text">{{ news.content|linebreaks }}</p>
-                {% for image in news.images.all %}
-                    <img src="{{ image.image.url }}" alt="{{ news.title }}" class="img-fluid">
-                {% endfor %}
-                <small class="text-muted">{{ news.date_posted }}</small>
+            <div class="col-md-8 col-lg-9">
+                <div class="card p-4 shadow" style="background-color: #f9f9f9;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ news.title }}</h5>
+                        <!-- Use the linebreaks filter here -->
+                        <p class="card-text">{{ news.content|linebreaks }}</p>
+                        {% if news.image %}
+                            <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-fluid news-image">
+                        {% endif %}
+                        <small class="text-muted news-date">{{ news.date_posted|date:"F j, Y" }}</small>
+
+                    </div>
+                </div>
             </div>
         </div>
         {% empty %}
