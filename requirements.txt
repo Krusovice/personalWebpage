@@ -5,3 +5,4 @@ numpy==1.26.4
 pandas==2.2.3
 sqlparse==0.4.4
 packaging==24.2
+Pillow==11.1.0
