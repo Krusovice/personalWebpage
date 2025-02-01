@@ -12,10 +12,6 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #062b55;">
         <div class="container">
-            <!-- Navbar Brand -->
-            <!--<a class="navbar-brand" href="#">Brand</a> -->
-            
-            <!-- Toggler Button for mobile view -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -24,20 +20,28 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Forside</a>
+                        <a class="nav-link active" aria-current="page" href="/">Frontpage</a>
                     </li>
+                    
+                    <!-- Dropdown Menu for Apps -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="appsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tools
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="appsDropdown">
+                            <li><a class="dropdown-item" href="/literature">Literature</a></li>
+                            <li><a class="dropdown-item" href="#">Foundation Response</a></li>
+                        </ul>
+                    </li>
+                    
                     <li class="nav-item">
-                        <a class="nav-link" href="/literature">Literature</a>
+                        <a class="nav-link" href="#">Blog</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Foundation Response</a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="#">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
+
                 </ul>
 
                 <!-- Aligning login/logout with container -->
@@ -60,11 +64,24 @@
     </nav>
 
 
+    <div class="container mt-4">
+        <div class="row">
 
+            <!-- Main content -->
+            <div class="col-md-9 mt-4">
+                {% block content %}
+                <!-- This will be filled with page-specific content -->
+                {% endblock %}
+            </div>
 
-    <div class="container">
-        {% block content %}
-        {% endblock %}
+            <!-- Static right box -->
+            <div class="col-md-3 mt-4">
+                <div class="card p-4 shadow" style="background-color: #f9f9f9;">
+                    <h5>Static Box 2</h5>
+                    <p>Some static content on the right side.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Link to external JavaScript -->
