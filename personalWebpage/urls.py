@@ -31,6 +31,7 @@ urlpatterns = [
     path('foundationResponse/', include('foundationResponse.urls')),
     path('literature/', include('literature.urls')),
     path('logged_in/', views.logged_in, name='logged_in'),
+    path('blog/', include('blog.urls')),
 ]
 
 if settings.DEBUG:

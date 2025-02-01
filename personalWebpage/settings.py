@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'personalWebpage',
     'about',
     'foundationResponse',
+    'blog',
 ]
 
 MIDDLEWARE = [

@@ -43,3 +43,20 @@
     display: block;
     margin-top: 0;
 }
+
+.static-box {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Optional: for rounded corners */
+}
+
+.static-box h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.static-box p {
+    font-size: 1rem;
+    color: #555;
+}
