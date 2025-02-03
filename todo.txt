@@ -1,0 +1,15 @@
+Okay. This is my expected timeframe. tell me what you think. I type it in hours, as I'm not working full days.
+1. Learning docker so I can use it (3-5 hours)
+2. Learning apache airflow (5-10 hours)
+3. Learning kafka (I'm not really sure, haven't touched it yet, but for this simple task, I would guess 3-7 hours)
+1. Change database to postgres (1-3 hours)
+1a Make Django+Nginx+postgres run in Docker (3-10 hours)
+2. Merging databases (1-3 hours)
+3. Create a backup function with Apache Airflow (2-5 hours)
+4. Setup ETL for stockprices on Docker (3-7 hours)
+5. Showing stockprices using D3 (1-3 hours)
+6. Finish foundation article and publish it on the blog (5-10 hours)
+7. Setup livestream using Kafka on Docker (3-10 hours)
+8. Plotting livestream using D3 (1-3 hours)
+
+So a total time between 28 and 66 hours. My best guess would probably be 45 hours. What do you think about that?
