@@ -19,13 +19,10 @@ services:
     container_name: django_app
     command: >
       bash -c "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 personalWebpage.wsgi:application"
-
-
     volumes:
       - .:/personalWebpage
       - ./personalWebpage/media:/personalWebpage/media
       - ./personalWebpage/static:/personalWebpage/static
-
     ports:
       - "8000:8000"
     depends_on:
@@ -38,11 +35,13 @@ services:
     container_name: nginx_reverse_proxy
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt/live/jkirstein.dk:/etc/letsencrypt/live/jkirstein.dk
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./conf.d:/etc/nginx/conf.d
+      - ./conf.d:/etc/nginx/conf.d  # Only mount nginx-specific config
+      - ./personalWebpage/static:/personalWebpage/static  # Serve static files
+      - ./personalWebpage/media:/personalWebpage/media  # Serve media files
+      - /etc/letsencrypt/live/jkirstein.dk:/etc/letsencrypt/live/jkirstein.dk  # SSL Certs
     ports:
       - "80:80"
+      - "443:443"  # Expose port 443 for HTTPS
     depends_on:
       - django
 
