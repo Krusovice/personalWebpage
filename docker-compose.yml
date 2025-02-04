@@ -25,6 +25,9 @@ services:
       - .:/personalWebpage
       - ./personalWebpage/media:/personalWebpage/media
       - ./personalWebpage/static:/personalWebpage/static
+      - /etc/letsencrypt/live/jkirstein.dk:/etc/letsencrypt/live/jkirstein.dk
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./conf.d:/etc/nginx/conf.d
     ports:
       - "8000:8000"
     depends_on:
