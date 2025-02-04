@@ -38,7 +38,7 @@ services:
       - ./conf.d:/etc/nginx/conf.d  # Only mount nginx-specific config
       - ./personalWebpage/static:/personalWebpage/static  # Serve static files
       - ./personalWebpage/media:/personalWebpage/media  # Serve media files
-      - /etc/letsencrypt/live/jkirstein.dk:/etc/letsencrypt/live/jkirstein.dk  # SSL Certs
+      - /etc/letsencrypt/:/etc/letsencrypt  # SSL Certs
     ports:
       - "80:80"
       - "443:443"  # Expose port 443 for HTTPS
