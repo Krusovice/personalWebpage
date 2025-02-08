@@ -158,3 +158,9 @@ LOGIN_REDIRECT_URL = '/logged_in/'
 LOGOUT_REDIRECT_URL = '/login_user/'
 
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://jkirstein.dk",
+    "https://www.jkirstein.dk",
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
