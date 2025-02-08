@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-*h9rmqxt*9&apea)&^dcz15*u_t=pbf$qv*xvzkd3&q^-zb^on
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'www.jkirstein.dk', 'jkirstein.dk', '192.168.1.116', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'www.jkirstein.dk', 'jkirstein.dk', '192.168.1.116', 'localhost','django']
 
 # Application definition
 
@@ -73,7 +73,7 @@ TEMPLATES = [
     },
 ]
 
-#WSGI_APPLICATION = 'personalWebpage.wsgi.application'
+WSGI_APPLICATION = 'personalWebpage.wsgi.application'
 
 
 # Database
@@ -91,7 +91,7 @@ DATABASES = {
 }
 '''
 DATABASES = {
-    'default': {
+    'default':docker exec -it django_app python manage.py findstatic css {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'personalWebpage_db'),
         'USER': os.getenv('POSTGRES_USER', 'Krusovice'),
@@ -135,12 +135,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    "/personalWebpage/personalWebpage/static",  # For global static files
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = '/personalWebpage/personalWebpage/staticfiles'
 
 # Media files
 MEDIA_URL = '/media/'

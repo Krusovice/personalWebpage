@@ -38,11 +38,10 @@ services:
     image: nginx:latest
     container_name: nginx_reverse_proxy
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./conf.d:/etc/nginx/conf.d
+      - ./nginx_development.conf:/etc/nginx/nginx.conf
+      - ./conf.d:/etc/nginx/conf.d  # Only mount nginx-specific config
       - ./personalWebpage/staticfiles:/personalWebpage/personalWebpage/staticfiles  # Serve static files
       - ./personalWebpage/media:/personalWebpage/personalWebpage/media  # Serve media files
-      - /etc/letsencrypt/:/etc/letsencrypt  # SSL Certs
     ports:
       - "80:80"
       - "443:443"  # Expose port 443 for HTTPS
@@ -51,4 +50,6 @@ services:
 
 volumes:
   postgres_data:
+
+
 

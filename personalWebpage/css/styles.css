@@ -1,0 +1,62 @@
+.toggle-btn {
+    all: unset; /* Remove default button styling */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+.toggle-btn:hover {
+    text-decoration: none;
+}
+
+.toggle-icon {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+    color: gold;
+}
+
+/* Rotate the icon when expanded */
+.toggle-btn[aria-expanded="true"] .toggle-icon {
+    transform: rotate(45deg);
+}
+
+.news-image {
+    max-width: 70%;   /* Limit the width to the container's width */
+    height: auto;      /* Maintain the aspect ratio */
+    max-height: 200px; /* Limit the maximum height */
+}
+
+.news-date {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 0.85em;
+    color: #777;
+}
+
+.navbar .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
+.static-box {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Optional: for rounded corners */
+}
+
+.static-box h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.static-box p {
+    font-size: 1rem;
+    color: #555;
+}
