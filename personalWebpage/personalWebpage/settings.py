@@ -91,7 +91,7 @@ DATABASES = {
 }
 '''
 DATABASES = {
-    'default':docker exec -it django_app python manage.py findstatic css {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'personalWebpage_db'),
         'USER': os.getenv('POSTGRES_USER', 'Krusovice'),
