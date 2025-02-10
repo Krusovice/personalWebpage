@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: personalWebpage_db
+      POSTGRES_USER: Krusovice
+      POSTGRES_PASSWORD: fedefrede
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django_app
+    command: >
+          bash -c "python manage.py migrate &&
+                   python manage.py collectstatic --noinput &&
+                   gunicorn --bind 0.0.0.0:8000 personalWebpage.wsgi:application"
+
+    volumes:
+      - .:/personalWebpage
+      - ./personalWebpage/staticfiles:/personalWebpage/personalWebpage/staticfiles
+      - ./personalWebpage/media:/personalWebpage/personalWebpage/media
+
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://Krusovice:fedefrede@postgres:5432/personalWebpage_db
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_reverse_proxy
+    volumes:
+      - ./nginx_dev.conf:/etc/nginx/nginx.conf
+      - ./conf.d:/etc/nginx/conf.d  # Only mount nginx-specific config
+      - ./personalWebpage/staticfiles:/personalWebpage/personalWebpage/staticfiles  # Serve static files
+      - ./personalWebpage/media:/personalWebpage/personalWebpage/media  # Serve media files
+    ports:
+      - "80:80"
+      - "443:443"  # Expose port 443 for HTTPS
+    depends_on:
+      - django
+
+volumes:
+  postgres_data:
+
+
+
