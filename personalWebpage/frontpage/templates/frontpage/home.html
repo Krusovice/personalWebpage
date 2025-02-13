@@ -19,9 +19,14 @@
         </div>
     {% empty %}
     <p>No news available.</p>
+
+    <div id="chart-container"></div>
+
     {% endfor %}
 
 
 
 
 {% endblock %}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="stock_market_chart.js"></script>

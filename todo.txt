@@ -1,9 +1,9 @@
 CHECK 1. Learning docker so I can use it (3-5 hours)
 CHECK 1. Change database to postgres (1-3 hours)
 CHECK 1a Make Django+Nginx+postgres run in Docker (3-10 hours)
+CHECK 2. Merging databases (1-3 hours)
 
 
-2. Merging databases (1-3 hours)
 3. Create a backup function with Apache Airflow (2-5 hours)
 
 2. Learning apache airflow (5-10 hours)
@@ -17,3 +17,10 @@ CHECK 1a Make Django+Nginx+postgres run in Docker (3-10 hours)
 8. Plotting livestream using D3 (1-3 hours)
 
 So a total time between 28 and 66 hours. My best guess would probably be 45 hours. What do you think about that?
+
+Extra ideas
+* Setup a stream for the raspberry pi's CPU and ram usage. The stream shouldn't be public, as we dont want to expose the knowledge that the host is on a pi.
+* Consider if there is something else that can be streamed to the website frontpage.
+* Add house prices and interest rates to the stock market graph. Updated daily.
+
+
