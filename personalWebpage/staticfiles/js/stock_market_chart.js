@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function plotGraph(data) {
     const width = 250;
-    const height = 200;
-    const margin = { top: 20, right: 10, bottom: 30, left: 30 };
+    const height = 250;
+    const margin = { top: 30, right: 20, bottom: 30, left: 20 };
 
     const svg = d3.select("#chart-container")
         .append("svg")
@@ -23,11 +23,11 @@ function plotGraph(data) {
     // **Title**
     svg.append("text")
         .attr("x", width / 2)
-        .attr("y", margin.top)
+        .attr("y", margin.top-20)
         .attr("text-anchor", "middle")
         .style("font-size", "14px")
         .style("font-weight", "bold")
-        .text("Stock Prices Over Time");
+        .text("Stock prices (currently mock data)");
 
     const x = d3.scaleTime()
         .domain(d3.extent(data, d => new Date(d.date)))
@@ -58,7 +58,7 @@ function plotGraph(data) {
     svg.append("path")
         .datum(data)
         .attr("fill", "none")
-        .attr("stroke", "steelblue")
+        .attr("stroke", "#062b55")
         .attr("stroke-width", 2)
         .attr("d", line);
 
@@ -82,10 +82,10 @@ function plotGraph(data) {
         .attr("cy", d => y(d.value))
         .attr("r", 5)
         .attr("fill", "transparent") // Initially invisible
-        .attr("stroke", "red") // Outline only
+        .attr("stroke", "black") // Outline only
         .attr("stroke-width", 2)
         .on("mouseover", function (event, d) {
-            d3.select(this).attr("fill", "red"); // Highlight the dot
+            d3.select(this).attr("fill", "black"); // Highlight the dot
             tooltip.style("visibility", "visible")
                 .text(`Date: ${d.date}, Value: ${d.value}`);
         })
