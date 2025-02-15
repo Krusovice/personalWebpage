@@ -137,11 +137,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    "/personalWebpage/personalWebpage/static",  # For global static files
+    "/personalWebpage/django/static",  # For global static files
 ]
 
 
-STATIC_ROOT = '/personalWebpage/personalWebpage/staticfiles'
+STATIC_ROOT = '/personalWebpage/django/staticfiles'
 #STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Media files

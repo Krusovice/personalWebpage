@@ -58,7 +58,7 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-/personalWebpage/media/
+/django/media/
 personalwebpage-443911-6ab16edcdc0e.json
 
 # Flask stuff:

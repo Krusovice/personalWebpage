@@ -29,7 +29,8 @@ services:
                    gunicorn --bind 0.0.0.0:8000 personalWebpage.wsgi:application"
 
     volumes:
-      - .:/personalWebpage
+      #- .:/django
+      - ./django:/personalWebpage/django
 
     ports:
       - "8000:8000"
@@ -46,8 +47,8 @@ services:
     volumes:
       - ./nginx_dev.conf:/etc/nginx/nginx.conf
       - ./conf.d:/etc/nginx/conf.d  # Only mount nginx-specific config
-      - ./personalWebpage/staticfiles:/personalWebpage/personalWebpage/staticfiles  # Serve static files
-      - ./personalWebpage/media:/personalWebpage/personalWebpage/media  # Serve media files
+      - ./django/staticfiles:/personalWebpage/django/staticfiles  # Serve static files
+      - ./django/media:/personalWebpage/django/media  # Serve media files
     ports:
       - "80:80"
       - "443:443"  # Expose port 443 for HTTPS
