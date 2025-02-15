@@ -11,6 +11,12 @@ services:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "Krusovice", "-d", "personalWebpage_db"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
 
   django:
     build:
@@ -24,13 +30,13 @@ services:
 
     volumes:
       - .:/personalWebpage
-      - ./personalWebpage/staticfiles:/personalWebpage/personalWebpage/staticfiles
-      - ./personalWebpage/media:/personalWebpage/personalWebpage/media
 
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
     environment:
       - DATABASE_URL=postgres://Krusovice:fedefrede@postgres:5432/personalWebpage_db
 
@@ -50,6 +56,7 @@ services:
 
 volumes:
   postgres_data:
+
 
 
 
