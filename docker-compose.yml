@@ -11,6 +11,12 @@ services:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "Krusovice", "-d", "personalWebpage_db"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
 
   django:
     build:
@@ -23,14 +29,14 @@ services:
                    gunicorn --bind 0.0.0.0:8000 personalWebpage.wsgi:application"
 
     volumes:
-      - .:/personalWebpage
-      - ./personalWebpage/staticfiles:/personalWebpage/personalWebpage/staticfiles
-      - ./personalWebpage/media:/personalWebpage/personalWebpage/media
+      - ./django:/personalWebpage/django
 
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
     environment:
       - DATABASE_URL=postgres://Krusovice:fedefrede@postgres:5432/personalWebpage_db
 
@@ -40,9 +46,9 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./conf.d:/etc/nginx/conf.d
-      - ./personalWebpage/staticfiles:/personalWebpage/personalWebpage/staticfiles  # Serve static files
-      - ./personalWebpage/media:/personalWebpage/personalWebpage/media  # Serve media files
-      - /etc/letsencrypt/:/etc/letsencrypt  # SSL Certs
+      - ./django/staticfiles:/personalWebpage/django/staticfiles
+      - ./django/media:/personalWebpage/django/media
+      - /etc/letsencrypt/:/etc/letsencrypt
     ports:
       - "80:80"
       - "443:443"  # Expose port 443 for HTTPS
@@ -51,4 +57,3 @@ services:
 
 volumes:
   postgres_data:
-
