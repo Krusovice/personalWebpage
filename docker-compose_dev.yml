@@ -56,9 +56,6 @@ services:
     depends_on:
       - django
 
-volumes:
-  postgres_data:
-
 
 
 
