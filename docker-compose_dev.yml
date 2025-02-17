@@ -7,10 +7,14 @@ services:
       POSTGRES_DB: personalWebpage_db
       POSTGRES_USER: Krusovice
       POSTGRES_PASSWORD: fedefrede
+      POSTGRES_MULTIPLE_DATABASES: personalWebpage_db,airflow
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+    #entrypoint: ["bash", "-c", "docker-entrypoint.sh postgres & sleep 10 && psql -U $POSTGRES_USER -c 'CREATE DATABASE airflow;'"]
+
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "Krusovice", "-d", "personalWebpage_db"]
       interval: 10s
@@ -57,5 +61,51 @@ services:
       - django
 
 
+  airflow-webserver:
+    image: apache/airflow:2.10.5
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_db/airflow
+    command: ["airflow", "webserver"]
+    ports:
+      - "8080:8080"
+    depends_on:
+      - airflow-init
+    restart: always
 
+  airflow-scheduler:
+    image: apache/airflow:2.10.5
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_db/airflow
+    command: ["airflow", "scheduler"]
+    depends_on:
+      - airflow-init
+    restart: always
 
+  airflow-cli:
+    image: apache/airflow:2.10.5
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_db/airflow
+    command: ["bash"]
+    depends_on:
+      - airflow-init
+
+  airflow-init:
+    image: apache/airflow:2.10.5
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db upgrade
+        exec airflow users create \
+          --username airflow \
+          --password airflow \
+          --firstname Airflow \
+          --lastname Admin \
+          --role Admin \
+          --email admin@example.com
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_db/airflow
+    restart: on-failure
