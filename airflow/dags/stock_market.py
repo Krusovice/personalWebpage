@@ -1,73 +1,83 @@
 from airflow.decorators import dag, task
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+import yfinance as yf
 from datetime import datetime
-from airflow.sensors.base import PokeReturnValue
-from airflow.hooks.base import BaseHook
-from airflow.operators.python import PythonOperator
-from airflow.providers.docker.operators.docker import DockerOperator
-
-from include.stock_market.tasks import _get_stock_prices, _store_prices, _get_formatted_csv
-
-SYMBOL = 'NVDA'
+import pandas as pd
 
 @dag(
-	start_date=datetime(2025,2,10),
-	schedule='@daily',
-	catchup=False,
-	tags=['stock_market'],
-
+    schedule="@daily",
+    start_date=datetime(2025, 1, 1),
+    catchup=False,
+    tags=["stock_market"],
 )
 
-def stock_market():
-	
-	@task.sensor(poke_interval=30, timeout=300, mode='poke')
-	def is_api_available() -> PokeReturnValue:
-		import requests
+def fetch_and_store_stock_data():
 
-		api = BaseHook.get_connection('stock_api')
-		url = f"{api.host}{api.extra_dejson['endpoint']}"
-		print(url)
-		response = requests.get(url, headers=api.extra_dejson['headers'])
+    @task()
+    def ensure_table_exists():
+        hook = PostgresHook(postgres_conn_id="postgres_default")
+        conn = hook.get_conn()
+        cursor = conn.cursor()
 
-		condition = response.json()['finance']['result'] is None
-		return PokeReturnValue(is_done=condition, xcom_value=url)
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS stock_prices (
+            id SERIAL PRIMARY KEY,
+            ticker VARCHAR(10),
+            date DATE NOT NULL UNIQUE,
+            close FLOAT,
+            CONSTRAINT unique_date_ticker UNIQUE (date, ticker)
+        );
+        """
+        cursor.execute(create_table_query)
+        conn.commit()
+        cursor.close()
+        conn.close()
 
-	get_stock_prices = PythonOperator(
-		task_id='get_stock_prices',
-		python_callable=_get_stock_prices,
-		op_kwargs={'url': '{{ ti.xcom_pull(task_ids="is_api_available") }}', 'symbol': SYMBOL}
-	)
+    @task()
+    def fetch_data():
+        ticker = "NVDA"
+        stock = yf.Ticker(ticker)
+        hist = stock.history(start="2025-01-01", end=datetime.today())
+        
+        if hist.empty:
+            return [] 
 
-	store_prices = PythonOperator(
-		task_id='store_prices',
-		python_callable=_store_prices,
-		op_kwargs={'stock': '{{ ti.xcom_pull(task_ids="get_stock_prices") }}'}
-	)
+        hist.reset_index(inplace=True)
+        hist = hist[['Date', 'Close']]
+        hist['ticker'] = ticker
+        hist['Date'] = hist['Date'].dt.strftime('%Y-%m-%d')
+        hist.columns = hist.columns.str.lower()
 
-	format_prices = DockerOperator(
-		task_id='format_prices',
-		image='airflow/stock-app',
-		container_name='format_prices',
-		api_version='auto',
-		auto_remove='success',
-		docker_url='tcp://docker-proxy:2375',
-		network_mode='container:spark-master',
-		tty=True,
-		xcom_all=False,
-		mount_tmp_dir=False,
-		environment={
-			'SPARK_APPLICATION_ARGS': '{{ ti.xcom_pull(task_ids="store_prices") }}'
-		}
-	)
+        print(hist)
 
-	get_formatted_csv = PythonOperator(
-		task_id='get_formatted_csv',
-		python_callable=_get_formatted_csv,
-		op_kwargs={
-			'path': '{{ ti.xcom_pull(task_ids="store_prices") }}'
-		}
+        return hist.to_dict(orient="records")
 
-	)
+    @task()
+    def store_data(stock_data):
+        if not stock_data:
+            return
 
-	is_api_available() >> get_stock_prices >> store_prices >> format_prices >> get_formatted_csv
+        hook = PostgresHook(postgres_conn_id="postgres_default")
+        conn = hook.get_conn()
+        cursor = conn.cursor()
 
-stock_market()
+        insert_query = """
+        insert into stock_prices (date, ticker, close)
+        VALUES (%s, %s, %s)
+        ON CONFLICT (date,ticker) DO UPDATE
+        SET close = EXCLUDED.close
+        """
+
+        for row in stock_data:
+            cursor.execute(insert_query, (row['date'], row['ticker'], row['close']))
+
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    ensure_table_exists()
+    stock_data = fetch_data()
+    store_data(stock_data)
+
+fetch_and_store_stock_data()
