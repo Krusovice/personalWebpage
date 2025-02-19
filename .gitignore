@@ -4,8 +4,8 @@ __pycache__/
 *.sqlite3
 local_settings.py
 personalwebpage-443911-6ab16edcdc0e.json
-/django/media/
-/django/migrations/
+django/media/
+django/migrations/
 
 
 # Folders
