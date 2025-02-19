@@ -1,2 +1,9 @@
-/django/media/
-.git
+django/media/
+django/staticfiles/
+postgres_data/
+airflow/logs/
+airflow/plugins/
+airflow/dags/
+.git/
+__pycache__/
+*.pyc
