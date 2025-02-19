@@ -1,19 +1,29 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const mockData = [
-        { date: "2024-02-01", value: 150 },
-        { date: "2024-02-02", value: 155 },
-        { date: "2024-02-03", value: 149 },
-        { date: "2024-02-04", value: 160 },
-        { date: "2024-02-05", value: 165 }
-    ];
+    // URL of your Django REST API endpoint (change if necessary)
+    const apiUrl = "http://localhost/airflow/api/stock_prices/";
 
-    plotGraph(mockData);
+    // Fetch the data from the API
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            // Process the data into a format that D3 can use
+            const formattedData = data.map(d => ({
+                date: d.date, // Ensure the date format is compatible
+                value: parseFloat(d.closing_price) // Convert the close price to a number
+            }));
+
+            // Pass the formatted data to plotGraph
+            plotGraph(formattedData);
+        })
+        .catch(error => {
+            console.error('Error fetching stock prices:', error);
+        });
 });
 
 function plotGraph(data) {
     const width = 250;
     const height = 250;
-    const margin = { top: 30, right: 20, bottom: 30, left: 20 };
+    const margin = { top: 30, right: 10, bottom: 30, left: 40 };
 
     const svg = d3.select("#chart-container")
         .append("svg")
@@ -23,11 +33,11 @@ function plotGraph(data) {
     // **Title**
     svg.append("text")
         .attr("x", width / 2)
-        .attr("y", margin.top-20)
+        .attr("y", margin.top - 20)
         .attr("text-anchor", "middle")
         .style("font-size", "14px")
         .style("font-weight", "bold")
-        .text("Stock prices (currently mock data)");
+        .text("Stock prices");
 
     const x = d3.scaleTime()
         .domain(d3.extent(data, d => new Date(d.date)))
@@ -80,7 +90,7 @@ function plotGraph(data) {
         .append("circle")
         .attr("cx", d => x(new Date(d.date)))
         .attr("cy", d => y(d.value))
-        .attr("r", 5)
+        .attr("r", 4)
         .attr("fill", "transparent") // Initially invisible
         .attr("stroke", "black") // Outline only
         .attr("stroke-width", 2)
