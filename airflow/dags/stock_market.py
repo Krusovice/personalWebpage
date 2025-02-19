@@ -23,7 +23,7 @@ def fetch_and_store_stock_data():
         CREATE TABLE IF NOT EXISTS stock_prices (
             id SERIAL PRIMARY KEY,
             ticker VARCHAR(10),
-            date DATE NOT NULL UNIQUE,
+            date DATE NOT NULL,
             close FLOAT,
             CONSTRAINT unique_date_ticker UNIQUE (date, ticker)
         );
@@ -35,7 +35,7 @@ def fetch_and_store_stock_data():
 
     @task()
     def fetch_data():
-        ticker = "NVDA"
+        ticker = "^OMXC25"
         stock = yf.Ticker(ticker)
         hist = stock.history(start="2025-01-01", end=datetime.today())
         
