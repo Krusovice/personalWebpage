@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY django /django/
+COPY django/requirements.txt /django/requirements.txt
 
 RUN pip install --no-cache-dir -r /django/requirements.txt
 

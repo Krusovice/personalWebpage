@@ -30,6 +30,8 @@ services:
     command: >
           bash -c "python manage.py migrate &&
                    python manage.py collectstatic --noinput &&
+                   chown -R www-data:www-data /personalWebpage/django/staticfiles &&
+                   chmod -R 755 /personalWebpage/django/staticfiles &&
                    gunicorn --bind 0.0.0.0:8000 personalWebpage.wsgi:application"
 
     volumes:
