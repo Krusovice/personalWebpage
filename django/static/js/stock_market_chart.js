@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // URL of your Django REST API endpoint (change if necessary)
-    const API_URL = window.location.hostname === 'localhost' 
+    const apiUrl = window.location.hostname === 'localhost' 
     ? 'http://localhost:8000/airflow/api/stock_prices/' 
     : 'https://jkirstein.dk/airflow/api/stock_prices/';
     
