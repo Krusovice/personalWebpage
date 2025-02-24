@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     // URL of your Django REST API endpoint (change if necessary)
-    const apiUrl = "http://localhost/airflow/api/stock_prices/";
-
+    const apiUrl = window.location.hostname === 'localhost' 
+    ? 'http://localhost:8000/airflow/api/stock_prices/' 
+    : 'https://jkirstein.dk/airflow/api/stock_prices/';
+    
     // Fetch the data from the API
     fetch(apiUrl)
         .then(response => response.json())

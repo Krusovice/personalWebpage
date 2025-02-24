@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*h9rmqxt*9&apea)&^dcz15*u_t=pbf$qv*xvzkd3&q^-zb^on'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'www.jkirstein.dk', 'jkirstein.dk', '192.168.1.116', 'localhost','django']
 
@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'personalWebpage',
     'about',
     'foundationResponse',
-    'blog',
     'rest_framework',
     'airflow',
     'corsheaders'

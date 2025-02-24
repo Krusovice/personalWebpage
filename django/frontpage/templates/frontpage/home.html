@@ -7,11 +7,10 @@
             <h5 class="card-title">{{ news.title }}</h5>
             <!-- Use the linebreaks filter here -->
             <p class="card-text">{{ news.content|linebreaks }}</p>
-            {% if news.image %}
-                <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-fluid news-image">
+            {% if news.pdf %}
+                    <a href="{{ news.pdf.url }}" class="btn btn-primary" target="_blank">Read PDF</a>
             {% endif %}
             <small class="text-muted news-date">{{ news.date_posted|date:"F j, Y" }}</small>
-
         </div>
     </div>
 {% empty %}

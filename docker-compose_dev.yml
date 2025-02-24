@@ -12,9 +12,8 @@ services:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-
-    #entrypoint: ["bash", "-c", "docker-entrypoint.sh postgres & sleep 10 && psql -U $POSTGRES_USER -c 'CREATE DATABASE airflow;'"]
-
+    networks:
+      - shared_network
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "Krusovice", "-d", "personalWebpage_db"]
       interval: 10s
@@ -31,20 +30,20 @@ services:
           bash -c "python manage.py migrate &&
                    python manage.py collectstatic --noinput &&
                    chown -R www-data:www-data /personalWebpage/django/staticfiles &&
-                   chmod -R 755 /personalWebpage/django/staticfiles &&
-                   gunicorn --bind 0.0.0.0:8000 personalWebpage.wsgi:application"
-
+                   chmod -R 755 /personalWebpage/django/staticfiles &&                   
+                   python manage.py runserver 0.0.0.0:8000"
+# gunicorn --bind 0.0.0.0:8000 personalWebpage.wsgi:application &&
     volumes:
       - ./django:/personalWebpage/django
-
     ports:
       - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
-
     environment:
-      - DATABASE_URL=postgres://Krusovice:fedefrede@postgres:5432/personalWebpage_db
+      - DATABASE_URL=postgres://Krusovice:fedefrede@postgres_db:5432/personalWebpage_db
+    networks:
+      - shared_network
 
   nginx:
     image: nginx:latest
@@ -61,6 +60,8 @@ services:
       - "443:443"  # Expose port 443 for HTTPS
     depends_on:
       - django
+    networks:
+      - shared_network
 
 
   airflow-webserver:
@@ -71,7 +72,6 @@ services:
       - AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
       - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql+psycopg2://airflow:airflow@postgres_db/personalWebpage_db
     command: [ "bash", "-c", "pip install -r /requirements.txt && exec airflow webserver" ]
-
     ports:
       - "8080:8080"
     volumes:
@@ -82,6 +82,8 @@ services:
     depends_on:
       - airflow-init
     restart: always
+    networks:
+      - shared_network
 
   airflow-scheduler:
     image: apache/airflow:2.10.5
@@ -91,7 +93,6 @@ services:
       - AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
       - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql+psycopg2://airflow:airflow@postgres_db/personalWebpage_db
     command: [ "bash", "-c", "pip install -r /requirements.txt && exec airflow scheduler" ]
-
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
@@ -100,6 +101,8 @@ services:
     depends_on:
       - airflow-init
     restart: always
+    networks:
+      - shared_network
 
   airflow-cli:
     image: apache/airflow:2.10.5
@@ -114,6 +117,8 @@ services:
       - ./airflow/requirements.txt:/requirements.txt
     depends_on:
       - airflow-init
+    networks:
+      - shared_network
 
   airflow-init:
     image: apache/airflow:2.10.5
@@ -133,3 +138,81 @@ services:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_db/airflow
     restart: on-failure
+    networks:
+      - shared_network
+
+  # Zookeeper service for Kafka
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+    networks:
+      - kafka_network
+      - shared_network
+
+  # Kafka service
+  kafka:
+    image: wurstmeister/kafka:latest
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka_network
+      - shared_network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9092"]
+      interval: 10s
+      retries: 5
+
+  # Producer service
+  producer:
+    build:
+      context: ./kafka/producer  # Path to the producer folder
+      dockerfile: Dockerfile
+    volumes:
+      - ./kafka/producer:/app  # Mount the producer folder into the container
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka_network
+      - shared_network
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+    restart: always
+
+  # Consumer service
+  consumer:
+    build:
+      context: ./kafka/consumer  # Path to the consumer folder
+      dockerfile: Dockerfile
+    volumes:
+      - ./kafka/consumer:/app  # Mount the consumer folder into the container
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - kafka_network
+      - shared_network
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+    restart: always
+
+networks:
+  kafka_network:
+    driver: bridge
+  shared_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

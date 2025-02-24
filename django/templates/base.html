@@ -34,10 +34,6 @@
                             <li><a class="dropdown-item" href="#">Foundation Response</a></li>
                         </ul>
                     </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'blog_list' %}">Blog</a>
-                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="#">About</a>
@@ -69,20 +65,20 @@
         <div class="row">
 
             <!-- Main content -->
-            <div class="col-md-8 mt-4">
+            <div class="col-md-7 mt-4">
                 {% block content %}
                 <!-- This will be filled with page-specific content -->
                 {% endblock %}
             </div>
 
             <!-- Static right box -->
-            <div class="col-md-8 mt-4">
+            <div class="col-md-5 mt-4">
                 <div class="static-box card p-4 shadow">
                     <div id="chart-container"></div>
                 </div>
 
                 <div class="static-box card p-4 shadow mt-4">
-                    <h5>Static Box 3</h5>
+                    <h5>Static Box 2</h5>
                     <p>Some static content.</p>
                 </div>
             </div>
