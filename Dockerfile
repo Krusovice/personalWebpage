@@ -6,16 +6,20 @@ WORKDIR /personalWebpage/django
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
+    curl gnupg \
+    grep \
     && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
+
+RUN npm install -g wscat
 
 COPY django/requirements.txt /django/requirements.txt
 
 RUN pip install --no-cache-dir -r /django/requirements.txt
 
-# Expose the port that Gunicorn will run on
 EXPOSE 8000
 
 # Define environment variable
 ENV PYTHONUNBUFFERED 1
 
-# CMD ["gunicorn", "personalWebpage.wsgi:application", "--bind", "0.0.0.0:8000"]

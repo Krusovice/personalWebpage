@@ -31,8 +31,8 @@ services:
                    python manage.py collectstatic --noinput &&
                    chown -R www-data:www-data /personalWebpage/django/staticfiles &&
                    chmod -R 755 /personalWebpage/django/staticfiles &&                   
-                   python manage.py runserver 0.0.0.0:8000"
-# gunicorn --bind 0.0.0.0:8000 personalWebpage.wsgi:application &&
+                   daphne -b 0.0.0.0 -p 8000 personalWebpage.asgi:application"
+#                   python manage.py runserver 0.0.0.0:8000 &
     volumes:
       - ./django:/personalWebpage/django
     ports:
@@ -40,8 +40,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
     environment:
       - DATABASE_URL=postgres://Krusovice:fedefrede@postgres_db:5432/personalWebpage_db
+      - REDIS_HOST=redis
     networks:
       - shared_network
 
@@ -195,7 +198,8 @@ services:
       context: ./kafka/consumer  # Path to the consumer folder
       dockerfile: Dockerfile
     volumes:
-      - ./kafka/consumer:/app  # Mount the consumer folder into the container
+      - ./kafka/consumer:/app
+      - ./django:/app/django_app
     depends_on:
       kafka:
         condition: service_healthy
@@ -207,6 +211,13 @@ services:
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
     restart: always
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - shared_network
 
 networks:
   kafka_network:

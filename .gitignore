@@ -6,7 +6,7 @@ local_settings.py
 personalwebpage-443911-6ab16edcdc0e.json
 django/media/
 django/migrations/
-
+django/node_modules/
 
 # Folders
 venv/

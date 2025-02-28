@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['127.0.0.1', 'www.jkirstein.dk', 'jkirstein.dk', '192.168.1.116
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +46,8 @@ INSTALLED_APPS = [
     'foundationResponse',
     'rest_framework',
     'airflow',
-    'corsheaders'
+    'corsheaders',
+    'system_metrics',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +65,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://jkirstein.dk",  # your production domain
     "http://localhost",      # local development domain
     "http://localhost:8000", # local development with Django running on port 8000
+    "ws://localhost:8001",
 ]
 
 ROOT_URLCONF = 'personalWebpage.urls'
@@ -82,23 +86,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'personalWebpage.wsgi.application'
+WSGI_APPLICATION = 'personalWebpage.wsgi.application'  # For traditional HTTP requests
+ASGI_APPLICATION = 'personalWebpage.asgi.application'  # For WebSockets and async features
 
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'personalWebpage_db',
-        'USER': 'Krusovice',
-        'PASSWORD': 'fedefrede',
-        'HOST': 'localhost',  # Or the IP address of your container
-        'PORT': '5432',
-    }
-}
-'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -109,6 +100,18 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
+
 
 
 # Password validation
@@ -169,6 +172,12 @@ LOGOUT_REDIRECT_URL = '/login_user/'
 CSRF_TRUSTED_ORIGINS = [
     "https://jkirstein.dk",
     "https://www.jkirstein.dk",
+    "http://localhost:8000",  # Django (HTTP)
+    "http://127.0.0.1:8000",
+    "ws://localhost:8000",  # WebSocket (WS)
+    "ws://127.0.0.1:8000",
+    "http://localhost", 
+    "http://127.0.0.1"
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
