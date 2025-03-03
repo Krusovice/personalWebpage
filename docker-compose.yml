@@ -146,7 +146,7 @@ services:
 
   # Zookeeper service for Kafka
   zookeeper:
-    image: wurstmeister/zookeeper:latest
+    image: arm64v8/zookeeper:latest
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     ports:
@@ -157,7 +157,7 @@ services:
 
   # Kafka service
   kafka:
-    image: wurstmeister/kafka:latest
+    image: arm64v8/kafka:latest
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
