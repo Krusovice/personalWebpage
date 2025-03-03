@@ -146,7 +146,7 @@ services:
 
   # Zookeeper service for Kafka
   zookeeper:
-    image: wurstmeister/zookeeper:latest
+    image: wurstmeister/zookeeper:latest # Use arm64v8/zookeeper:latest for raspberry pi
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     ports:
@@ -157,7 +157,7 @@ services:
 
   # Kafka service
   kafka:
-    image: wurstmeister/kafka:latest
+    image: wurstmeister/kafka:latest # Use confluentinc/cp-kafka:latest for raspberry pi
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
