@@ -1,18 +1,10 @@
-print('consumer start')
 import asyncio
 from kafka import KafkaConsumer
+import redis
 import json
 import time
-#time.sleep(1000)
 import psycopg2
-
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_app.personalWebpage.settings_consumer')
-import django
-django.setup()
-from channels.layers import get_channel_layer
-
-channel_layer = get_channel_layer()
 
 # Kafka Consumer
 consumer = KafkaConsumer(
@@ -32,21 +24,31 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 
+# Redis connection
+r = redis.Redis(host="redis", port=6379)
+
 while True:
-    messages = consumer.poll(timeout_ms=5000)  # Poll Kafka every 5 sec
+    messages = consumer.poll(timeout_ms=2000)  # Poll Kafka every second
     if messages:
         for _, records in messages.items():
             for record in records:
-                data = json.loads(record.value.decode('utf-8'))
-                cursor.execute(
-                    "INSERT INTO system_metrics_table (timestamp, cpu_usage, ram_usage) VALUES (%s, %s, %s)",
-                    (data['timestamp'], data['cpu_usage'], data['ram_usage'])
-                )
+                try:
+                    data = json.loads(record.value.decode('utf-8'))
+                    data["type"] = "realtime"  # Fixed syntax
 
-                # Send data to channel layer
-                asyncio.run(channel_layer.group_send(
-                    "metrics_group",
-                    {"type": "metrics.message", "message": 'data'},
-                ))
-    conn.commit()
-    time.sleep(5)  # Wait 5 seconds before next poll
+                    # Insert into PostgreSQL
+                    cursor.execute(
+                        "INSERT INTO system_metrics_table (timestamp, cpu_usage, ram_usage) VALUES (%s, %s, %s)",
+                        (data['timestamp'], data['cpu_usage'], data['ram_usage'])
+                    )
+
+                    # Publish to Redis
+                    r.publish("metrics_group", json.dumps(data))
+
+                except (json.JSONDecodeError, KeyError) as e:
+                    print(f"Error parsing JSON: {e}")
+                except psycopg2.Error as e:
+                    print(f"Database error: {e}")
+                    conn.rollback()  # Rollback transaction if an error occurs
+
+    conn.commit()  # Commit after processing all messages in batch

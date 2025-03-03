@@ -1,46 +1,70 @@
 import json
+import asyncio
+import psycopg2
+import redis
+from datetime import datetime, timedelta
 from channels.generic.websocket import AsyncWebsocketConsumer
+from zoneinfo import ZoneInfo
 
 class SystemMetricsConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.group_name = "metrics_group"
-
-        # Join group
-        await self.channel_layer.group_add(
-            self.group_name,
-            self.channel_name
-        )
-
         await self.accept()
 
-    async def disconnect(self, close_code):
-        # Leave group
-        await self.channel_layer.group_discard(
-            self.group_name,
-            self.channel_name
-        )
+        # Fetch the last hour of data from PostgreSQL
+        history_data = self.get_last_hour_metrics()
 
-    async def receive(self, text_data):
+        # Send initial data to the frontend
+        await self.send(json.dumps({"data": history_data}))
+
+        # Subscribe to Redis for real-time updates
+        self.redis = redis.Redis(host="redis", port=6379, decode_responses=True)
+        self.pubsub = self.redis.pubsub()
+        self.pubsub.subscribe("metrics_group")
+
+        await self.listen_to_redis()
+
+    def get_last_hour_metrics(self):
+        """Fetches the last hour of metrics from PostgreSQL."""
         try:
-            received_message = json.loads(text_data)
-            print(f"Received message from Kafka: {received_message}") #Print to console
-            await self.send_metrics({
-                'message': received_message,
-            })
-        except json.JSONDecodeError:
-            print("Received invalid JSON from Kafka.")
-            await self.send_metrics({
-                'error': 'Invalid JSON received.'
-            })
-        except Exception as e:
-            print(f"Error processing message from Kafka: {e}")
-            await self.send_metrics({
-                'error': f'An error occurred: {e}'
-            })
+            conn = psycopg2.connect(
+                dbname="personalWebpage_db",
+                user="Krusovice",
+                password="fedefrede",
+                host="postgres_db",
+                port="5432"
+            )
+            cursor = conn.cursor()
 
+            one_hour_ago = datetime.now(ZoneInfo("Europe/Stockholm")) - timedelta(hours=1)
+            query = """
+                SELECT timestamp, cpu_usage, ram_usage
+                FROM system_metrics_table
+                WHERE timestamp >= %s
+                ORDER BY timestamp ASC
+            """
+            cursor.execute(query, (one_hour_ago,))
+            data = cursor.fetchall()
+            cursor.close()
+            conn.close()
 
-    async def send_metrics(self, event):
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({
-            'message': event['message'],
-        }))
+            # Convert data to a list of dicts
+            return [
+                {"timestamp": row[0].isoformat(), "cpu_usage": row[1], "ram_usage": row[2], "type": "history"}
+                for row in data
+            ]
+        except psycopg2.Error as e:
+            print(f"Database error: {e}")
+            return []
+
+    async def listen_to_redis(self):
+        """Continuously listens for real-time updates from Redis."""
+        while True:
+            message = self.pubsub.get_message()
+            if message and message['type'] == 'message':
+                await self.send(message['data'])
+            await asyncio.sleep(1)  # Avoid busy-waiting
+
+    async def disconnect(self, close_code):
+        """Cleanup on disconnect."""
+        self.pubsub.close()
+        self.redis.close()
