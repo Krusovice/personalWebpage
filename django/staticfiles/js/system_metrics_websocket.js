@@ -1,10 +1,9 @@
 // Graph setup without data
 
-const container = document.getElementById("metrics-chart");
-const width = container.clientWidth;
-const height = container.clientHeight;
+const width = 250;
+const height = 250;
 
-const margin = { top: 30, right: 10, bottom: 30, left: 40 };
+const margin = { top: 30, right: 40, bottom: 30, left: 40 };
 
 // Select the container and append an SVG once
 const svg = d3.select("#metrics-chart")
@@ -97,7 +96,16 @@ legend.append("text")
     .text("RAM");
 
 // Websocket setup
-const socket = new WebSocket("ws://localhost:8000/ws/metrics/");
+
+// Determine if we're in production or development
+const isProduction = window.location.hostname !== "localhost";
+
+// Use the correct WebSocket URL based on the environment
+const websocketUrl = isProduction
+    ? "wss://" + window.location.hostname + "/ws/metrics/"
+    : "ws://localhost:8000/ws/metrics/";
+
+const socket = new WebSocket(websocketUrl);
 
 socket.onopen = function(event) {
     console.log("WebSocket connection opened!");
