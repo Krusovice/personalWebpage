@@ -1,10 +1,9 @@
 // Graph setup without data
 
-const container = document.getElementById("metrics-chart");
-const width = container.clientWidth;
-const height = container.clientHeight;
+const width = 250;
+const height = 250;
 
-const margin = { top: 30, right: 10, bottom: 30, left: 40 };
+const margin = { top: 30, right: 40, bottom: 30, left: 40 };
 
 // Select the container and append an SVG once
 const svg = d3.select("#metrics-chart")
