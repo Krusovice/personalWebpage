@@ -103,8 +103,8 @@ const isProduction = window.location.hostname !== "localhost";
 
 // Use the correct WebSocket URL based on the environment
 const websocketUrl = isProduction
-    ? "ws://" + window.location.hostname + "/ws/metrics/"  // For production (using `wss://` for secure connection)
-    : "ws://localhost:8000/ws/metrics/";  // For local development
+    ? "wss://" + window.location.hostname + "/ws/metrics/"
+    : "ws://localhost:8000/ws/metrics/";
 
 const socket = new WebSocket(websocketUrl);
 
