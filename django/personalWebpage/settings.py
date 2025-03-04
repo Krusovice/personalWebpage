@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*h9rmqxt*9&apea)&^dcz15*u_t=pbf$qv*xvzkd3&q^-zb^on'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'www.jkirstein.dk', 'jkirstein.dk', '192.168.1.116', 'localhost','django']
 
@@ -148,8 +148,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, "static"),  # Use relative path
+#]
+
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),  # Use relative path
+    "/personalWebpage/django/static",  # Use relative path
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

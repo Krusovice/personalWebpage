@@ -1,6 +1,9 @@
 // Graph setup without data
-const width = 250;
-const height = 250;
+
+const container = document.getElementById("metrics-chart");
+const width = container.clientWidth;
+const height = container.clientHeight;
+
 const margin = { top: 30, right: 10, bottom: 30, left: 40 };
 
 // Select the container and append an SVG once
