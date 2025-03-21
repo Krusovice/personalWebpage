@@ -40,7 +40,7 @@ function plotGraph(data) {
         .attr("text-anchor", "middle")
         .style("font-size", "14px")
         .style("font-weight", "bold")
-        .text("C25 Stock Value");
+        .text("C25 Index Closing Value");
 
     const x = d3.scaleTime()
         .domain(d3.extent(data, d => new Date(d.date)))
