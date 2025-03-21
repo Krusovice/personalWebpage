@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 date: d.date, // Ensure the date format is compatible
                 value: parseFloat(d.closing_price) // Convert the close price to a number
             }));
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
 
             // Pass the formatted data to plotGraph
             plotGraph(formattedData);

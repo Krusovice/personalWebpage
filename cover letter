@@ -1,0 +1,55 @@
+
+
+############
+Cover Letter
+############
+
+Hej,
+
+Jeg har arbejdet brugt Python i mere end 8 år både privat og professionelt. Jeg har de seneste par år lavet adskillige applikationer i professionelt regi, og besluttede i 2024 at skifte til et mere data orienteret job. Jeg startede derfor med at studere Machine Learning og har efterfølgende studeret og taget kurser i postgreSQL, data warehousing og Apache Airflow. 
+For at få praktisk erfaring, har jeg hostet min egen hjemmeside fra min Raspberry Pi, jkirstein.dk. Her anvender jeg Airflow til dagligt at trække C25-indekset, gemme i min postgres db samt plotte dem på hjemmesiden ved rest api. Derudover har jeg sat et livestream op af CPU- og RAM-udnyttelse - dette ved brug af Apache Kafka, Redis og Websocket (både til postgres db og livestream plot). Og så benytter jeg hjemmesiden som personlig literatur-database (kræver login) samt uploading af artikler som jeg selv har skrevet.
+
+Jeg er i en læringsproces, men føler at jeg på nuværende tidspunkt har evner til aktivt at kunne begynde at søge jobs indenfor data engineering feltet. Derfor jeg søger denne stilling.
+
+Mit fokus fremadrettet er Spark, Databricks og Cloud.
+
+Hvis I har lyst til en chat omkring muligheder enten nu eller eventuelt i fremtiden, er jeg frisk på at komme forbi til en kop kaffe.
+
+Mvh. Joachim
+
+
+######################
+Besked til headhuntere
+######################
+
+Hej,
+
+Jeg er selvlært inden for data engineering, og er jobsøgende. Jeg har arbejdet brugt Python i mere end 8 år både privat og professionelt. Jeg har de seneste par år lavet adskillige applikationer i professionelt regi, og besluttede i 2024 at skifte til et mere data orienteret job. Jeg startede derfor med at studere Machine Learning og har efterfølgende studeret og taget kurser i postgreSQL, data warehousing og Apache Airflow. 
+For at få praktisk erfaring, har jeg hostet min egen hjemmeside fra min Raspberry Pi, jkirstein.dk. Her anvender jeg Airflow til dagligt at trække C25-indekset, gemme i min postgres db samt plotte dem på hjemmesiden ved rest api. Derudover har jeg sat et livestream op af CPU- og RAM-udnyttelse - dette ved brug af Apache Kafka, Redis og Websocket (både til postgres db og livestream plot). Og så benytter jeg hjemmesiden som personlig literatur-database (kræver login) samt uploading af artikler som jeg selv har skrevet.
+
+Jeg er i en læringsproces, men føler at jeg på nuværende tidspunkt har evner til aktivt at kunne begynde at søge jobs indenfor feltet.
+
+Mit fokus er fremadrettet Spark, Databricks og Cloud.
+
+Hvis du har lyst til en chat omkring muligheder enten nu eller eventuelt i fremtiden, er jeg frisk på en chat. Og hvis du eventuelt har feedback til hvad jeg kan gøre bedre for at lande et første job, eller hvilke hard skills som er eftertragtede, så er jeg meget åben :)
+
+Mvh. Joachim
+
+##############################
+Besked til headhuntere engelsk
+##############################
+
+Hi,
+
+I am a self-taught data engineer and currently looking for a job. I have been using Python for more than eight years, both privately and professionally. Over the past few years, I have developed several applications in a professional setting, and in 2024, I decided to transition into a more data-oriented role. To achieve this, I started studying Machine Learning and have since taken courses in PostgreSQL, Data Warehousing, and Apache Airflow.
+
+To gain practical experience, I have been hosting my own website on my Raspberry Pi, jkirstein.dk. Here, I use Airflow to fetch the C25 index daily, store it in my PostgreSQL database, and plot it on the website via a REST API. Additionally, I have set up a live stream of CPU and RAM utilization using Apache Kafka, Redis, and WebSockets—both for storage in PostgreSQL and real-time visualization. I also use the website as a personal literature database (login required) and as a platform for uploading articles I have written.
+
+I am still in a learning process, but I feel that I now have the skills to actively start applying for jobs in the field.
+
+My future focus is on Spark, Databricks, and Cloud.
+
+If you're open to a chat about opportunities now or in the future, I'd be happy to connect! Also, if you have any feedback on what I can improve to land my first job or which hard skills are most in demand, I’m very open to suggestions.
+
+Best regards,
+Joachim
