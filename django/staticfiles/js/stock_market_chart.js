@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const formattedData = data.map(d => ({
                 date: d.date, // Ensure the date format is compatible
                 value: parseFloat(d.closing_price) // Convert the close price to a number
-            }));
+            }))
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
 
             // Pass the formatted data to plotGraph
             plotGraph(formattedData);
@@ -39,7 +40,7 @@ function plotGraph(data) {
         .attr("text-anchor", "middle")
         .style("font-size", "14px")
         .style("font-weight", "bold")
-        .text("Stock prices");
+        .text("C25 Index Closing Value");
 
     const x = d3.scaleTime()
         .domain(d3.extent(data, d => new Date(d.date)))

@@ -24,18 +24,19 @@ services:
 
   django:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./django
+      dockerfile: ./django/Dockerfile
     container_name: django_app
     command: >
           bash -c "python manage.py migrate &&
                    python manage.py collectstatic --noinput &&
                    chown -R www-data:www-data /personalWebpage/django/staticfiles &&
-                   chmod -R 755 /personalWebpage/django/staticfiles &&                   
+                   chmod -R 755 /personalWebpage/django/staticfiles &&  
                    daphne -b 0.0.0.0 -p 8000 personalWebpage.asgi:application"
 #                   python manage.py runserver 0.0.0.0:8000 &
     volumes:
       - ./django:/personalWebpage/django
+      - ./utils:/personalWebpage/utils
     ports:
       - "8000:8000"
     depends_on:
@@ -55,7 +56,6 @@ services:
     volumes:
       #- ./nginx_dev.conf:/etc/nginx/nginx.conf # Comment for production
       - ./nginx.conf:/etc/nginx/nginx.conf # Uncomment for production
-      - ./conf.d:/etc/nginx/conf.d
       - ./django/staticfiles:/personalWebpage/django/staticfiles
       - ./django/media:/personalWebpage/django/media
       - /etc/letsencrypt/:/etc/letsencrypt # Uncomment for production
@@ -196,11 +196,12 @@ services:
   # Consumer service
   consumer:
     build:
-      context: ./kafka/consumer  # Path to the consumer folder
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./kafka/consumer/Dockerfile
     volumes:
       - ./kafka/consumer:/app
       - ./django:/app/django_app
+      - ./utils:/utils
     depends_on:
       kafka:
         condition: service_healthy
@@ -212,7 +213,6 @@ services:
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
     restart: always
-
   redis:
     image: redis:alpine
     ports:

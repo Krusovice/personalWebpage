@@ -1,4 +1,6 @@
+# Compilation
 __pycache__/
+*.py[cod]
 
 # Django stuff:
 *.sqlite3
@@ -7,11 +9,11 @@ personalwebpage-443911-6ab16edcdc0e.json
 django/media/
 django/migrations/
 django/node_modules/
+conf.d
 
 # Folders
 venv/
 postgres_data/
-astro-airflow/
 
 # Docker
 .docker/
@@ -20,3 +22,6 @@ astro-airflow/
 *.log
 *.pid
 *.sock
+
+# Personal
+secrets.py

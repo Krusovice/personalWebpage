@@ -11,12 +11,12 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
-
 RUN npm install -g wscat
 
-COPY django/requirements.txt /django/requirements.txt
+COPY ./django/requirements.txt /requirements.txt
+COPY ./utils /personalWebpage/utils
 
-RUN pip install --no-cache-dir -r /django/requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
 
 EXPOSE 8000
 

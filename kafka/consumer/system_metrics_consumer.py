@@ -5,23 +5,14 @@ import json
 import time
 import psycopg2
 import os
+from utils.config import POSTGRES_CONFIG, KAFKA_CONFIG
+
+
 
 # Kafka Consumer
-consumer = KafkaConsumer(
-    'system_metrics',
-    bootstrap_servers='kafka:9092',
-    auto_offset_reset='latest',
-    enable_auto_commit=True
-)
+consumer = KafkaConsumer('system_metrics',**KAFKA_CONFIG)
 
-# PostgreSQL Connection
-conn = psycopg2.connect(
-    dbname="personalWebpage_db",
-    user="Krusovice",
-    password="fedefrede",
-    host="postgres_db",
-    port="5432"
-)
+conn = psycopg2.connect(**POSTGRES_CONFIG)
 cursor = conn.cursor()
 
 # Redis connection
