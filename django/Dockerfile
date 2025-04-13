@@ -14,7 +14,7 @@ RUN apt-get install -y nodejs
 RUN npm install -g wscat
 
 COPY ./django/requirements.txt /requirements.txt
-COPY ./utils /personalWebpage/utils
+COPY ./utils /personalWebpage/django/utils
 
 RUN pip install --no-cache-dir -r /requirements.txt
 

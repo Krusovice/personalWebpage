@@ -5,7 +5,7 @@ import json
 import time
 import psycopg2
 import os
-from utils.config import POSTGRES_CONFIG, KAFKA_CONFIG
+from utils.config import POSTGRES_CONFIG, KAFKA_CONFIG, REDIS_CONFIG
 
 
 
@@ -16,7 +16,7 @@ conn = psycopg2.connect(**POSTGRES_CONFIG)
 cursor = conn.cursor()
 
 # Redis connection
-r = redis.Redis(host="redis", port=6379)
+r = redis.Redis(host=REDIS_CONFIG['host'], port=REDIS_CONFIG['port'])
 
 while True:
     messages = consumer.poll(timeout_ms=2000)  # Poll Kafka every second

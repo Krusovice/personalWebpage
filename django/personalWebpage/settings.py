@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 import psycopg2
+from utils.config import REDIS_CONFIG, POSTGRES_CONFIG, DJANGO_SECRET_KEY
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*h9rmqxt*9&apea)&^dcz15*u_t=pbf$qv*xvzkd3&q^-zb^on'
+SECRET_KEY = DJANGO_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -93,21 +94,20 @@ ASGI_APPLICATION = 'personalWebpage.asgi.application'  # For WebSockets and asyn
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'personalWebpage_db'),
-        'USER': os.getenv('POSTGRES_USER', 'Krusovice'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'fedefrede'),
-        'HOST': os.getenv('POSTGRES_HOST', 'postgres'),
-        'PORT': '5432',
+        'NAME': POSTGRES_CONFIG["dbname"],
+        'USER': POSTGRES_CONFIG["user"],
+        'PASSWORD': POSTGRES_CONFIG["password"],
+        'HOST': POSTGRES_CONFIG["host"],
+        'PORT': POSTGRES_CONFIG["port"],
     }
 }
-
 
 
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('redis', 6379)],
+            "hosts": [(REDIS_CONFIG["host"], REDIS_CONFIG["port"])],
         },
     },
 }

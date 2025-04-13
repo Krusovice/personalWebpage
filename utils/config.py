@@ -15,3 +15,8 @@ KAFKA_CONFIG = {
     "auto_offset_reset": "latest",
     "enable_auto_commit": True
 }
+
+REDIS_CONFIG = {
+    "host": "redis",
+    "port": 6379
+}

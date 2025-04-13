@@ -22,6 +22,19 @@ services:
       timeout: 5s
     command: ["bash", "-c", "chmod -R 777 /var/lib/postgresql/data && docker-entrypoint.sh postgres"]
 
+  # Redis server
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - shared_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   django:
     build:
       context: .
@@ -35,14 +48,14 @@ services:
                    daphne -b 0.0.0.0 -p 8000 personalWebpage.asgi:application"
     volumes:
       - ./django:/personalWebpage/django
-      - ./utils:/personalWebpage/utils
+      - ./utils:/personalWebpage/django/utils
     ports:
       - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
     environment:
       - DATABASE_URL=postgres://Krusovice:fedefrede@postgres_db:5432/personalWebpage_db
       - REDIS_HOST=redis
@@ -65,7 +78,6 @@ services:
       - django
     networks:
       - shared_network
-
 
   airflow-webserver:
     image: apache/airflow:2.10.5
@@ -178,11 +190,11 @@ services:
   # Producer service
   producer:
     build:
-      context: ./kafka/producer  # Path to the producer folder
-      dockerfile: Dockerfile
+      context: .  
+      dockerfile: ./kafka/producer/Dockerfile
     volumes:
-      - ./kafka/producer:/app  # Mount the producer folder into the container
-      - ./utils:/personalWebpage/utils
+      - ./kafka/producer:/app  
+      - ./utils:/utils
     depends_on:
       kafka:
         condition: service_healthy
@@ -213,13 +225,6 @@ services:
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
     restart: always
-
-  redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
-    networks:
-      - shared_network
 
 networks:
   kafka_network:

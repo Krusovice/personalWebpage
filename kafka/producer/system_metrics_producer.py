@@ -4,9 +4,10 @@ from datetime import datetime
 import time
 from kafka import KafkaProducer
 from zoneinfo import ZoneInfo
+from utils.config import KAFKA_CONFIG
 
 # Kafka producer setup
-producer = KafkaProducer(bootstrap_servers=['kafka:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+producer = KafkaProducer(bootstrap_servers=[KAFKA_CONFIG['bootstrap_servers']], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
 def monitor_system():
     cpu_usage = psutil.cpu_percent(interval=1)  # CPU usage in percentage
