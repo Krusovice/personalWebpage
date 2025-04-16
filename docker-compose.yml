@@ -37,7 +37,7 @@ services:
 
   django:
     build:
-      context: ./django
+      context: .
       dockerfile: ./django/Dockerfile
     container_name: django_app
     command: >
@@ -48,7 +48,7 @@ services:
                    daphne -b 0.0.0.0 -p 8000 personalWebpage.asgi:application"
     volumes:
       - ./django:/personalWebpage/django
-      - ./utils:/personalWebpage/utils
+      - ./utils:/personalWebpage/django/utils
     ports:
       - "8000:8000"
     depends_on:
