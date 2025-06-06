@@ -1,4 +1,6 @@
 # Personal Webpage
+⚠️ **This repository is expired and no longer maintained.**  
+Please see [personal-webpage](https://github.com/Krusovice/personal-webpage) for the active version.
 
 This repository contains my personal webpage, which serves as a sandbox for experimenting with backend and data engineering tools.  
 It also includes a personal database for managing literature references.
